@@ -15,6 +15,8 @@ function Swap() {
   const [tokenTwoAmount, setTokenTwoAmount] = useState(null)
   const [tokenOne, setTokenOne] = useState(tokenList[2]);
   const [tokenTwo, setTokenTwo] = useState(tokenList[1]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [changeToken, setChangeToken] = useState(1);
 
   function handleSlippageChange(e){
     setSlippage(e.target.value);
@@ -22,6 +24,18 @@ function Swap() {
 
   function changeAmount(e){
     setTokenOneAmount(e.target.value)
+  }
+
+  function switchTokens(){
+    const one = tokenOne;
+    const two = tokenTwo;
+    setTokenOne(two);
+    setTokenTwo(one);
+  }
+
+  function openModal(asset){
+    setChangeToken(asset)
+    setIsOpen(true);
   }
 
   const settings = (
@@ -39,6 +53,16 @@ function Swap() {
   )
   
   return (
+    <>
+    <Modal
+      open={isOpen}
+      footer={null}
+      onCancel={()=> setIsOpen(false)}
+      title="Select a token"
+    >
+
+
+    </Modal>
     <div className='tradeBox'>
       <div className='tradeBoxHeader'>
         <h4>Swap</h4>
@@ -46,26 +70,31 @@ function Swap() {
         content={settings}
         title="Settings"
         trigger="click"
-        placement='bottomRight'>
+        placement='bottomRight'
+        >
         <SettingOutlined className='cog' />
         </Popover>
       </div>
       <div className='inputs'>
         <Input placeholder='0' value={tokenOneAmount} onChange={changeAmount} />
         <Input placeholder='0' value={tokenTwoAmount} disabled={true} />
-        <div className='assetOne'>
+        <div className='switchButton' onClick={switchTokens} />
+          <ArrowDownOutlined className='switchArrow' />
+        </div>
+        <div className='assetOne' onClick={()=> openModal(1)}>
           <img src={tokenOne.img} alt='assetOneLogo' className='assetLogo' />
           {tokenOne.ticker}
           <DownOutlined />
         </div>
-        <div className='assetTwo'>
+        <div className='assetTwo' onClick={()=> openModal(2)}>
          <img src={tokenTwo.img} alt='assetOneLogo' className='assetLogo' />
           {tokenTwo.ticker}
           <DownOutlined />
         </div>
       </div>
-    </div>
+    </>
   )
+
 }
 
 export default Swap
